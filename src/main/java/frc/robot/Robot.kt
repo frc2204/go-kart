@@ -1,6 +1,9 @@
 package frc.robot
 
 import edu.wpi.first.wpilibj.TimedRobot
+import edu.wpi.first.wpilibj.XboxController
+import edu.wpi.first.wpilibj.drive.DifferentialDrive
+import edu.wpi.first.wpilibj.motorcontrol.Spark
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 
@@ -19,9 +22,18 @@ object Robot : TimedRobot()
 
     private var autonomousCommand: Command? = null
 
+    private lateinit var driveController: XboxController
+    private lateinit var drive: DifferentialDrive
+    private const val driveDeadBand: Double = 0.05
 
     override fun robotInit()
     {
+        val leftMotorController = Spark(0)
+        val rightMotorController = Spark(1)
+        drive = DifferentialDrive(leftMotorController, rightMotorController)
+        drive.setDeadband(driveDeadBand)
+        driveController = XboxController(0)
+
         // Access the RobotContainer object so that it is initialized. This will perform all our
         // button bindings, and put our autonomous chooser on the dashboard.
         RobotContainer
@@ -62,7 +74,9 @@ object Robot : TimedRobot()
     /** This method is called periodically during operator control.  */
     override fun teleopPeriodic()
     {
-
+        val forwardSpeed: Double = driveController.getRawAxis(1)
+        val rotation: Double = driveController.getRawAxis(0)
+        drive.arcadeDrive(forwardSpeed, rotation, true)
     }
 
     override fun testInit()
