@@ -21,18 +21,16 @@ object Robot : TimedRobot()
 {
 //Defining variables and instantiating objects
     private var autonomousCommand: Command? = null
-    private var speed:Double = 0.0
-    private var rotation:Double = 0.0
     private val driveController : XboxController = XboxController(0)
-    private val motor1 : Spark = Spark(0)
-    private val motor2 : Spark = Spark(1)
+    private val motor1 : Spark = Spark(1)
+    private val motor2 : Spark = Spark(0)
     private val drive : DifferentialDrive = DifferentialDrive(motor1,motor2)
     override fun robotInit()
     {
         // Access the RobotContainer object so that it is initialized. This will perform all our
         // button bindings, and put our autonomous chooser on the dashboard.
 
-        drive.setDeadband(0.02)
+        drive.setDeadband(Constants.deadbandValue)
     }
 
 
@@ -72,10 +70,9 @@ object Robot : TimedRobot()
     override fun teleopPeriodic()
     {
         //Changing values for speed and rotation depending on joystick input
-        speed = driveController.getRawAxis(1)
-        rotation = driveController.getRawAxis(0)
-        drive.arcadeDrive(speed,rotation,true)
-
+        val speed = driveController.getRawAxis(0) * 0.5
+        val rotation = driveController.getRawAxis(1) * 0.5
+        drive.arcadeDrive(speed, rotation, false)
     }
 
     override fun testInit()
