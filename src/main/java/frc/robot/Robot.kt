@@ -17,16 +17,16 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler
  * the `Main.kt` file in the project. (If you use the IDE's Rename or Move refactorings when renaming the
  * object or package, it will get changed everywhere.)
  */
-object Robot : TimedRobot()
-{
-//Defining variables and instantiating objects
+object Robot : TimedRobot() {
+
+    //Defining variables and instantiating objects
+
     private var autonomousCommand: Command? = null
-    private val driveController : XboxController = XboxController(0)
-    private val motor1 : Spark = Spark(1)
-    private val motor2 : Spark = Spark(0)
-    private val drive : DifferentialDrive = DifferentialDrive(motor1,motor2)
-    override fun robotInit()
-    {
+    private val driveController: XboxController = XboxController(0)
+    private val motor1: Spark = Spark(1)
+    private val motor2: Spark = Spark(0)
+    private val drive: DifferentialDrive = DifferentialDrive(motor1, motor2)
+    override fun robotInit() {
         // Access the RobotContainer object so that it is initialized. This will perform all our
         // button bindings, and put our autonomous chooser on the dashboard.
 
@@ -34,65 +34,53 @@ object Robot : TimedRobot()
     }
 
 
-    override fun robotPeriodic()
-    {
-
+    override fun robotPeriodic() {
         CommandScheduler.getInstance().run()
     }
 
-    override fun disabledInit()
-    {
+    override fun disabledInit() {
 
     }
 
-    override fun disabledPeriodic()
-    {
+    override fun disabledPeriodic() {
 
     }
 
-    override fun autonomousInit()
-    {
+    override fun autonomousInit() {
         autonomousCommand = RobotContainer.getAutonomousCommand()
         autonomousCommand?.schedule()
     }
 
-    override fun autonomousPeriodic()
-    {
+    override fun autonomousPeriodic() {
 
     }
 
-    override fun teleopInit()
-    {
+    override fun teleopInit() {
         autonomousCommand?.cancel()
     }
 
     /** This method is called periodically during operator control.  */
-    override fun teleopPeriodic()
-    {
+    override fun teleopPeriodic() {
         //Changing values for speed and rotation depending on joystick input
         val speed = driveController.getRawAxis(0) * 0.5
         val rotation = driveController.getRawAxis(1) * 0.5
         drive.arcadeDrive(speed, rotation, false)
     }
 
-    override fun testInit()
-    {
+    override fun testInit() {
         // Cancels all running commands at the start of test mode.
         CommandScheduler.getInstance().cancelAll()
     }
 
-    override fun testPeriodic()
-    {
+    override fun testPeriodic() {
 
     }
 
-    override fun simulationInit()
-    {
+    override fun simulationInit() {
 
     }
 
-    override fun simulationPeriodic()
-    {
+    override fun simulationPeriodic() {
 
     }
 }
