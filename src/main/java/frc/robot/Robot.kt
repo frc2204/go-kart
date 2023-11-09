@@ -62,8 +62,8 @@ object Robot : TimedRobot() {
     /** This method is called periodically during operator control.  */
     override fun teleopPeriodic() {
         //Changing values for speed and rotation depending on joystick input
-        val speed = driveController.getRawAxis(0) * 0.5
-        val rotation = driveController.getRawAxis(1) * 0.5
+        val speed = driveController.getRawAxis(4) * 0.75
+        val rotation = driveController.getRawAxis(1) * 0.75
         drive.arcadeDrive(speed, rotation, false)
     }
 
