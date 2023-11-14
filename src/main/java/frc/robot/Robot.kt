@@ -1,5 +1,6 @@
 package frc.robot
 
+import edu.wpi.first.math.filter.SlewRateLimiter
 import edu.wpi.first.wpilibj.TimedRobot
 import edu.wpi.first.wpilibj.XboxController
 import edu.wpi.first.wpilibj.drive.DifferentialDrive
@@ -26,6 +27,8 @@ object Robot : TimedRobot() {
     private val motor1: Spark = Spark(1)
     private val motor2: Spark = Spark(0)
     private val drive: DifferentialDrive = DifferentialDrive(motor1, motor2)
+    private val slewRateLimitX = SlewRateLimiter(0.4)
+    private val slewRateLimitY = SlewRateLimiter(2.5)
     override fun robotInit() {
         // Access the RobotContainer object so that it is initialized. This will perform all our
         // button bindings, and put our autonomous chooser on the dashboard.
@@ -62,9 +65,11 @@ object Robot : TimedRobot() {
     /** This method is called periodically during operator control.  */
     override fun teleopPeriodic() {
         //Changing values for speed and rotation depending on joystick input
-        val speed = driveController.getRawAxis(4) * 0.75
-        val rotation = driveController.getRawAxis(1) * 0.75
-        drive.arcadeDrive(speed, rotation, false)
+        val speed = driveController.getRawAxis(4)
+        val rotation = driveController.getRawAxis(1)
+        val slewRateLimitedX = slewRateLimitX.calculate(rotation)
+        val slewRateLimitedY = slewRateLimitY.calculate(speed)
+        drive.arcadeDrive(slewRateLimitedY, slewRateLimitedX, false)
     }
 
     override fun testInit() {
