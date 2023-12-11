@@ -27,8 +27,8 @@ object Robot : TimedRobot() {
     private val motor1: Spark = Spark(1)
     private val motor2: Spark = Spark(0)
     private val drive: DifferentialDrive = DifferentialDrive(motor1, motor2)
-    private val slewRateLimitX = SlewRateLimiter(0.4)
-    private val slewRateLimitY = SlewRateLimiter(2.5)
+    private val slewRateLimitX = SlewRateLimiter(2.0)
+    private val slewRateLimitY = SlewRateLimiter(2.0)
     override fun robotInit() {
         // Access the RobotContainer object so that it is initialized. This will perform all our
         // button bindings, and put our autonomous chooser on the dashboard.
@@ -68,7 +68,7 @@ object Robot : TimedRobot() {
         val speed = driveController.getRawAxis(4)
         val rotation = driveController.getRawAxis(1)
         val slewRateLimitedX = slewRateLimitX.calculate(rotation)
-        val slewRateLimitedY = slewRateLimitY.calculate(speed)
+        val slewRateLimitedY = slewRateLimitY.calculate(speed) * 0.7 + .23
         drive.arcadeDrive(slewRateLimitedY, slewRateLimitedX, false)
     }
 
