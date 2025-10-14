@@ -3,10 +3,13 @@ package frc.robot
 import edu.wpi.first.math.filter.SlewRateLimiter
 import edu.wpi.first.wpilibj.TimedRobot
 import edu.wpi.first.wpilibj.XboxController
+import edu.wpi.first.wpilibj.*
 import edu.wpi.first.wpilibj.drive.DifferentialDrive
 import edu.wpi.first.wpilibj.motorcontrol.Spark
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
+import frc.robot.Constants
+import kotlin.math.abs
 
 /**
  * The VM is configured to automatically run this object (which basically functions as a singleton class),
@@ -23,7 +26,8 @@ object Robot : TimedRobot() {
     //Defining variables and instantiating objects
 
     private var autonomousCommand: Command? = null
-    private val driveController: XboxController = XboxController(0)
+    private val xboxDriveController: XboxController = XboxController(0)
+    private val ps4DriveController: PS4Controller = PS4Controller(1)
     private val motor1: Spark = Spark(1)
     private val motor2: Spark = Spark(0)
     private val drive: DifferentialDrive = DifferentialDrive(motor1, motor2)
@@ -65,11 +69,22 @@ object Robot : TimedRobot() {
     /** This method is called periodically during operator control.  */
     override fun teleopPeriodic() {
         //Changing values for speed and rotation depending on joystick input
-        val speed = driveController.getRawAxis(4)
-        val rotation = driveController.getRawAxis(1)
-        val slewRateLimitedX = slewRateLimitX.calculate(rotation)
-        val slewRateLimitedY = slewRateLimitY.calculate(speed) * 0.7 + .23
-        drive.arcadeDrive(slewRateLimitedY, slewRateLimitedX, false)
+        val xboxSpeed = xboxDriveController.getRawAxis(4)
+        val xboxRotation = xboxDriveController.getRawAxis(1)
+
+        var ps5Speed = ps4DriveController.getRawAxis(4)
+        var psRotation = ps4DriveController.getRawAxis(1)
+
+        if(abs(ps5Speed) > Constants.ps5xDeadZone && abs(psRotation) > Constants.ps5yDeadZone){
+            val slewRateLimitedX = slewRateLimitX.calculate(xboxRotation)
+            val slewRateLimitedY = slewRateLimitY.calculate(xboxSpeed) * 0.7 + .23
+            drive.arcadeDrive(slewRateLimitedY, slewRateLimitedX, false)
+        }
+        else {
+            val slewRateLimitedX = slewRateLimitX.calculate(xboxRotation)
+            val slewRateLimitedY = slewRateLimitY.calculate(xboxSpeed) * 0.7 + .23
+            drive.arcadeDrive(slewRateLimitedY, slewRateLimitedX, false)
+        }
     }
 
     override fun testInit() {
